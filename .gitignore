@@ -13,3 +13,15 @@
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
+
+# VS Code
+**/.vscode
+.vscode/*
+__debug_bin
+**/__debug_bin
+.history/
+*.vsix
+
+# Ignore Mac DS_Store files
+.DS_Store
+**/.DS_Store
