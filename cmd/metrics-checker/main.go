@@ -59,21 +59,27 @@ func order(old bool) []rule {
 	defer infinispan.Close()
 
 	scanner := bufio.NewScanner(infinispan)
-	var rules = make([]rule, 0, 100)
-	var current = rule{rows: make([]string, 0, 3)}
+	var rules = make([]rule, 0, 150)
+	var current = rule{rows: make([]string, 0, 5)}
+	c := &current
 
 	for scanner.Scan() {
 		row := scanner.Text()
 		pre := strings.HasPrefix(row, "#")
 
-		c := &current
-		c.rows = append(current.rows, row)
-		if !pre {
-			c.name = row
+		if pre && current.name != "" {
 			rules = append(rules, current)
-			current = rule{rows: make([]string, 0, 3)}
+			current = rule{rows: make([]string, 0, 5)}
+		}
+
+		c.rows = append(current.rows, row)
+		if !pre && current.name == "" {
+			c.name = row
 		}
 	}
+
+	rules = append(rules, current)
+	current = rule{rows: make([]string, 0, 5)}
 
 	if err := scanner.Err(); err != nil {
 		log.Fatal(err)
